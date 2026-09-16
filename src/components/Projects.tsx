@@ -9,8 +9,7 @@ export function Projects() {
       <div className="container">
         <h2 className="section__title">Projects</h2>
         <p className="section__lead">
-          A few things I have built. Each one has a short preview, a link to the code and a live
-          demo.
+          A few things I have built. Each one has a short video and a link to the code.
         </p>
 
         <div className="projects__list">

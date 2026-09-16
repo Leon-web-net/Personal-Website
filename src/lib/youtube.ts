@@ -88,6 +88,32 @@ export function loadYouTubeApi(): Promise<YTNamespace> {
   return apiPromise
 }
 
+/**
+ * Call a no-argument player method, but only if it is genuinely there.
+ *
+ * `new YT.Player()` hands back an object immediately, yet its methods are not attached
+ * until the iframe reports ready - and they go away again once destroy() has run. Calling
+ * one outside that window throws a TypeError, and an unguarded throw inside a React effect
+ * unmounts the whole tree, which the visitor sees as a blank white page.
+ *
+ * Checking for the method rather than tracking a ready flag covers both ends: too early,
+ * and after teardown.
+ */
+export function callPlayer(
+  player: YTPlayer | null,
+  method: 'playVideo' | 'pauseVideo' | 'mute' | 'destroy',
+): boolean {
+  const fn = player?.[method]
+  if (typeof fn !== 'function') return false
+  try {
+    fn.call(player)
+    return true
+  } catch {
+    // The player can be torn down between the check and the call.
+    return false
+  }
+}
+
 export const thumbUrl = (id: string, quality: 'maxresdefault' | 'hqdefault') =>
   `https://i.ytimg.com/vi/${id}/${quality}.jpg`
 

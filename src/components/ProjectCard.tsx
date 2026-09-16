@@ -1,6 +1,7 @@
 import type { Project } from '../types'
 import { useReveal } from '../hooks/useReveal'
 import { Media } from './Media'
+import { ErrorBoundary } from './ErrorBoundary'
 import { ExternalIcon, GitHubIcon } from './Icons'
 import './ProjectCard.css'
 
@@ -27,7 +28,19 @@ export function ProjectCard({ project, index }: Props) {
       className={`project reveal${flipped ? ' project--flipped' : ''}`}
     >
       <div className="project__media">
-        <Media media={project.media} title={project.title} priority={index === 0} />
+        {/* A failing preview should cost this one card its video, not the whole page.
+            The fallback is deliberately plain markup rather than <Media>: if Media is
+            what threw, rendering it again would throw again. */}
+        <ErrorBoundary
+          label={`preview:${project.id}`}
+          fallback={
+            <div className="media media--placeholder" role="img" aria-label={`${project.title} preview unavailable`}>
+              <span>Preview unavailable</span>
+            </div>
+          }
+        >
+          <Media media={project.media} title={project.title} priority={index === 0} />
+        </ErrorBoundary>
       </div>
 
       <div className="project__body">

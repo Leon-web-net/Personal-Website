@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Media } from '../types'
 import { useInView } from '../hooks/useInView'
 import { useMediaQuery } from '../hooks/useMediaQuery'
-import { loadYouTubeApi, thumbUrl, warmYouTubeConnections, type YTPlayer } from '../lib/youtube'
+import { callPlayer, loadYouTubeApi, thumbUrl, warmYouTubeConnections, type YTPlayer } from '../lib/youtube'
 import { ExternalIcon, PauseIcon, PlayIcon } from './Icons'
 
 type YouTubeMedia = Extract<Media, { type: 'youtube' }>
@@ -103,7 +103,7 @@ export function YouTubePreview({ media, title, priority }: Props) {
       const mount = document.createElement('div')
       hostRef.current.append(mount)
 
-      playerRef.current = new YT.Player(mount, {
+      const player: YTPlayer = new YT.Player(mount, {
         host: 'https://www.youtube-nocookie.com',
         videoId: media.id,
         width: String(PLAYER_W),
@@ -123,8 +123,14 @@ export function YouTubePreview({ media, title, priority }: Props) {
         },
         events: {
           onReady: (event) => {
-            event.target.mute()
-            if (wantsPlayRef.current) event.target.playVideo()
+            // The card can be torn down while the iframe is still loading. If this
+            // player is no longer the current one, it is an orphan - bin it.
+            if (playerRef.current !== event.target) {
+              callPlayer(event.target, 'destroy')
+              return
+            }
+            callPlayer(event.target, 'mute')
+            if (wantsPlayRef.current) callPlayer(event.target, 'playVideo')
           },
           // Dev only: run `npm run dev`, hover a card, and the console reports the
           // quality actually being served plus what was on offer. This is the way to
@@ -151,6 +157,8 @@ export function YouTubePreview({ media, title, priority }: Props) {
           },
         },
       })
+
+      playerRef.current = player
     } finally {
       creatingRef.current = false
     }
@@ -159,24 +167,28 @@ export function YouTubePreview({ media, title, priority }: Props) {
   // Single effect drives the player: tear down when far away, otherwise follow intent.
   useEffect(() => {
     if (!nearby) {
-      playerRef.current?.destroy()
+      callPlayer(playerRef.current, 'destroy')
       playerRef.current = null
+      // Also clears the iframe of a player that never became ready, since such a player
+      // has no destroy() to call.
       hostRef.current?.replaceChildren()
       return
     }
 
     if (wantsPlay) {
-      if (playerRef.current) playerRef.current.playVideo()
-      else void createPlayer()
+      // If the player exists but is not ready yet, there is nothing to do here: its
+      // onReady handler re-checks the intent and starts playback itself.
+      if (!playerRef.current) void createPlayer()
+      else callPlayer(playerRef.current, 'playVideo')
     } else {
-      playerRef.current?.pauseVideo()
+      callPlayer(playerRef.current, 'pauseVideo')
     }
   }, [nearby, wantsPlay, createPlayer])
 
   useEffect(
     () => () => {
       window.clearTimeout(hoverTimerRef.current)
-      playerRef.current?.destroy()
+      callPlayer(playerRef.current, 'destroy')
       playerRef.current = null
     },
     [],
@@ -190,7 +202,13 @@ export function YouTubePreview({ media, title, priority }: Props) {
     const from = media.start ?? 0
     const id = window.setInterval(() => {
       const player = playerRef.current
-      if (player && player.getCurrentTime() >= until) player.seekTo(from, true)
+      // These take arguments, so they need their own guard rather than callPlayer.
+      if (typeof player?.getCurrentTime !== 'function' || typeof player.seekTo !== 'function') return
+      try {
+        if (player.getCurrentTime() >= until) player.seekTo(from, true)
+      } catch {
+        // Player torn down between ticks.
+      }
     }, 250)
 
     return () => window.clearInterval(id)
