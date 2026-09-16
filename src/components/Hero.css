@@ -1,5 +1,10 @@
+/*
+ * No bottom padding on purpose. The next section's top padding owns the gap below the
+ * hero, so the two never stack into a total nobody chose - which is what made the gap
+ * above "Projects" (4rem + 4rem) larger than the gap above the hero.
+ */
 .hero {
-  padding-block: var(--s-24) var(--s-16);
+  padding-block: var(--s-24) 0;
 }
 
 .hero__role {
@@ -34,6 +39,6 @@
 
 @media (max-width: 640px) {
   .hero {
-    padding-block: var(--s-16) var(--s-12);
+    padding-block: var(--s-16) 0;
   }
 }

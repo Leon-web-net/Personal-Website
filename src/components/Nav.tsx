@@ -12,9 +12,6 @@ export function Nav() {
         <nav className="nav__links" aria-label="Primary">
           <a href="#projects">Projects</a>
           <a href="#contact">Contact</a>
-          <a href={profile.cvUrl} target="_blank" rel="noopener noreferrer">
-            CV
-          </a>
           <a href={profile.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
             <GitHubIcon />
           </a>

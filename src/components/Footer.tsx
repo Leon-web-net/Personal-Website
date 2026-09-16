@@ -8,7 +8,7 @@ export function Footer() {
       <div className="container">
         <h2 className="footer__title">Get in touch</h2>
         <p className="footer__lead">
-          Open to graduate roles in machine learning, computer vision and control. The quickest way
+          Open to graduate roles in machine learning, computer vision and control systems. The quickest way
           to reach me is email.
         </p>
         <div className="footer__links">

@@ -1,5 +1,5 @@
 import { profile } from '../data/profile'
-import { FileIcon, GitHubIcon, LinkedInIcon, MailIcon } from './Icons'
+import { GitHubIcon, LinkedInIcon, MailIcon } from './Icons'
 import './Hero.css'
 
 export function Hero() {
@@ -8,14 +8,12 @@ export function Hero() {
       <div className="container">
         <p className="hero__role">{profile.role}</p>
         <h1 className="hero__title">{profile.headline}</h1>
-        <p className="hero__intro">{profile.intro}</p>
+        {/* Skipped entirely when empty - an empty <p> still contributes its bottom
+            margin, which would leave a stray gap above the buttons. */}
+        {profile.intro && <p className="hero__intro">{profile.intro}</p>}
         <div className="hero__actions">
           <a className="btn btn--primary" href="#projects">
             See projects
-          </a>
-          <a className="btn btn--ghost" href={profile.cvUrl} target="_blank" rel="noopener noreferrer">
-            <FileIcon className="btn__icon" />
-            CV
           </a>
           <a className="btn btn--ghost" href={profile.github} target="_blank" rel="noopener noreferrer">
             <GitHubIcon className="btn__icon" />

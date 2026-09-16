@@ -13,7 +13,13 @@ export interface YTPlayer {
   seekTo(seconds: number, allowSeekAhead: boolean): void
   destroy(): void
   getCurrentTime(): number
+  /**
+   * Read-only. There is deliberately no setter here: `setPlaybackQuality` is
+   * deprecated and measurably does nothing - calling it with 'hd1080' leaves the
+   * stream exactly where it was. Quality is influenced only by player size.
+   */
   getPlaybackQuality(): string
+  getAvailableQualityLevels(): string[]
 }
 
 export interface YTStateChangeEvent {
@@ -30,6 +36,7 @@ interface YTPlayerOptions {
   events?: {
     onReady?: (event: { target: YTPlayer }) => void
     onStateChange?: (event: YTStateChangeEvent) => void
+    onPlaybackQualityChange?: (event: { target: YTPlayer; data: string }) => void
   }
 }
 

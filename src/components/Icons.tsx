@@ -49,16 +49,6 @@ export function MailIcon(props: Props) {
   )
 }
 
-export function FileIcon(props: Props) {
-  return (
-    <svg {...base} {...props}>
-      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
-      <path d="M14 3v5h5" />
-      <path d="M9 13h6M9 17h6" />
-    </svg>
-  )
-}
-
 export function PlayIcon(props: Props) {
   return (
     <svg {...base} fill="currentColor" stroke="none" {...props}>
@@ -66,3 +56,12 @@ export function PlayIcon(props: Props) {
     </svg>
   )
 }
+
+export function PauseIcon(props: Props) {
+  return (
+    <svg {...base} fill="currentColor" stroke="none" {...props}>
+      <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />
+    </svg>
+  )
+}
+

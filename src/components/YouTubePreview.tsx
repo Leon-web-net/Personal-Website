@@ -3,7 +3,7 @@ import type { Media } from '../types'
 import { useInView } from '../hooks/useInView'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import { loadYouTubeApi, thumbUrl, warmYouTubeConnections, type YTPlayer } from '../lib/youtube'
-import { PlayIcon } from './Icons'
+import { ExternalIcon, PauseIcon, PlayIcon } from './Icons'
 
 type YouTubeMedia = Extract<Media, { type: 'youtube' }>
 
@@ -26,7 +26,7 @@ interface Props {
 }
 
 export function YouTubePreview({ media, title, priority }: Props) {
-  const containerRef = useRef<HTMLButtonElement | null>(null)
+  const containerRef = useRef<HTMLDivElement | null>(null)
   const hostRef = useRef<HTMLDivElement | null>(null)
   const playerRef = useRef<YTPlayer | null>(null)
   const creatingRef = useRef(false)
@@ -56,17 +56,27 @@ export function YouTubePreview({ media, title, priority }: Props) {
   // waiting for YouTube to report a state change. `playing` alone can lag or go stale.
   const showPlayer = playing && wantsPlay && nearby
 
+  // While hovering, the centre button would sit on top of the video. Reduced-motion
+  // users never hover to play, so they keep it as their only pause control.
+  const hidePlayButton = showPlayer && !reducedMotion
+
+  const watchUrl = `https://youtu.be/${media.id}${media.start ? `?t=${media.start}` : ''}`
+
   // Mirrored into a ref for the async player setup, which resolves long after this render.
   useEffect(() => {
     wantsPlayRef.current = wantsPlay
   }, [wantsPlay])
 
-  // Tell the scaler how far to shrink the 1920x1080 player to fit this card.
+  // Tell the scaler how far to shrink the 1920x1080 player. Fitting both axes means a
+  // card with a non-16:9 aspect letterboxes the player rather than cropping it.
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
 
-    const update = () => el.style.setProperty('--yt-scale', String(el.clientWidth / PLAYER_W))
+    const update = () => {
+      const scale = Math.min(el.clientWidth / PLAYER_W, el.clientHeight / PLAYER_H)
+      el.style.setProperty('--yt-scale', String(scale))
+    }
     update()
 
     if (!('ResizeObserver' in window)) return
@@ -115,6 +125,18 @@ export function YouTubePreview({ media, title, priority }: Props) {
           onReady: (event) => {
             event.target.mute()
             if (wantsPlayRef.current) event.target.playVideo()
+          },
+          // Dev only: run `npm run dev`, hover a card, and the console reports the
+          // quality actually being served plus what was on offer. This is the way to
+          // confirm the oversize-and-scale trick is earning its keep, since quality
+          // depends on the real browser, screen and connection.
+          onPlaybackQualityChange: (event) => {
+            if (import.meta.env.DEV) {
+              console.info(
+                `[youtube:${media.id}] now playing at "${event.data}" ` +
+                  `(available: ${event.target.getAvailableQualityLevels().join(', ')})`,
+              )
+            }
           },
           onStateChange: (event) => {
             if (event.data === YT.PlayerState.PLAYING) {
@@ -193,18 +215,14 @@ export function YouTubePreview({ media, title, priority }: Props) {
   }, [media.id])
 
   return (
-    <button
+    <div
       ref={containerRef}
-      type="button"
       className="media media__facade"
       onMouseEnter={beginHover}
       onMouseLeave={endHover}
+      // Focus bubbles in React, so tabbing to the controls counts as hover intent.
       onFocus={beginHover}
       onBlur={endHover}
-      // Hovering already plays, so this is a no-op with a mouse. It is the only way in
-      // for reduced-motion users and anyone driving the page from the keyboard.
-      onClick={() => setPinned((p) => !p)}
-      aria-label={`${showPlayer ? 'Pause' : 'Play'} preview of ${title}`}
     >
       <img
         className="media__el"
@@ -226,9 +244,31 @@ export function YouTubePreview({ media, title, priority }: Props) {
       />
 
       <span className={`media__scrim${showPlayer ? ' is-hidden' : ''}`} />
-      <span className={`media__play${showPlayer ? ' is-hidden' : ''}`}>
-        <PlayIcon className="media__play-icon" />
-      </span>
-    </button>
+
+      <button
+        type="button"
+        className={`media__play${hidePlayButton ? ' is-hidden' : ''}`}
+        onClick={() => setPinned((p) => !p)}
+        aria-label={`${showPlayer ? 'Pause' : 'Play'} preview of ${title}`}
+      >
+        {showPlayer ? (
+          <PauseIcon className="media__play-icon" />
+        ) : (
+          <PlayIcon className="media__play-icon" />
+        )}
+      </button>
+
+      {/* Opens the full video on YouTube, where it can be watched at any size. */}
+      <a
+        className="media__link"
+        href={watchUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Watch the ${title} video on YouTube`}
+        title="Watch on YouTube"
+      >
+        <ExternalIcon width={15} height={15} />
+      </a>
+    </div>
   )
 }

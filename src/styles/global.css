@@ -62,8 +62,18 @@ video {
   padding-inline: var(--s-6);
 }
 
+/*
+ * A section's top padding is the single source of the gap between it and whatever
+ * comes before, so preceding blocks should not add bottom padding of their own.
+ */
 .section {
-  padding-block: var(--s-16);
+  padding-block: var(--s-24) var(--s-16);
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding-block: var(--s-16) var(--s-12);
+  }
 }
 
 .section__title {

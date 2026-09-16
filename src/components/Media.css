@@ -23,13 +23,10 @@
   background: var(--surface);
 }
 
-/* Hover-to-play YouTube preview */
+/* Hover-to-play YouTube preview. A plain container, not a button - it holds the play
+   and full-screen buttons, and a button may not be nested inside another button. */
 .media__facade {
-  padding: 0;
-  cursor: pointer;
   display: block;
-  font: inherit;
-  color: inherit;
   transition: box-shadow 200ms, transform 200ms;
 }
 
@@ -95,12 +92,45 @@
   translate: -50% -50%;
   width: 64px;
   height: 64px;
+  padding: 0;
+  border: 0;
   border-radius: 50%;
+  cursor: pointer;
   display: grid;
   place-items: center;
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 6px 20px rgba(17, 24, 39, 0.25);
   transition: scale 200ms var(--ease), background 200ms, opacity 240ms var(--ease);
+}
+
+/* Link out to the full video on YouTube, tucked into the corner and shown on hover. */
+.media__link {
+  position: absolute;
+  right: var(--s-3);
+  bottom: var(--s-3);
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 8px rgba(17, 24, 39, 0.18);
+  opacity: 0;
+  transition: opacity 200ms, background 200ms, scale 150ms var(--ease);
+}
+
+/* Always reachable by keyboard, even before the pointer arrives. */
+.media__facade:hover .media__link,
+.media__link:focus-visible {
+  opacity: 1;
+}
+
+.media__link:hover {
+  background: #fff;
+  color: var(--accent);
+  scale: 1.06;
 }
 
 .media__facade:hover .media__play {
