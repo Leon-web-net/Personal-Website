@@ -27,7 +27,7 @@ export function ProjectCard({ project, index }: Props) {
       className={`project reveal${flipped ? ' project--flipped' : ''}`}
     >
       <div className="project__media">
-        <Media media={project.media} title={project.title} />
+        <Media media={project.media} title={project.title} priority={index === 0} />
       </div>
 
       <div className="project__body">

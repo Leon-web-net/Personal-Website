@@ -1,7 +1,24 @@
 /** A short-form media preview shown beside a project description. */
 export type Media =
+  /**
+   * A YouTube video (unlisted is fine). Shows the thumbnail at rest and plays on
+   * hover, so the player only loads for people who look at it.
+   * `id` is the part after youtu.be/ or watch?v= - e.g. 'EW4Ia1L1KV4'.
+   * `start`/`end` (seconds) loop just a segment, which is usually a better preview
+   * than a long video played from the top.
+   */
+  | {
+      type: 'youtube'
+      id: string
+      alt: string
+      poster?: string
+      start?: number
+      end?: number
+    }
+  /** A self-hosted clip in /public/media. Autoplays muted on loop. */
   | { type: 'video'; src: string; poster?: string; alt: string }
-  | { type: 'image'; src: string; alt: string }
+  /** A still image. Use fit: 'contain' for plots and diagrams you must not crop. */
+  | { type: 'image'; src: string; alt: string; fit?: 'cover' | 'contain' }
 
 export type ProjectStatus = 'live' | 'complete' | 'in-progress'
 

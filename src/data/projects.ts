@@ -3,8 +3,15 @@ import type { MiniProject, Project } from '../types'
 /**
  * HOW TO ADD A PROJECT
  * 1. Append one object to `projects` below (order here = order on the page).
- * 2. Drop a short muted clip (mp4, 5-10 s) or a screenshot (webp/png) in /public/media
- *    and point `media.src` at it, e.g. '/media/snake-ai.mp4'.
+ * 2. Give it a preview. Easiest is an unlisted YouTube upload:
+ *      media: { type: 'youtube', id: 'EW4Ia1L1KV4', alt: 'what happens in the video' }
+ *    The id is the part after youtu.be/ or watch?v=. The page shows the video's
+ *    thumbnail and only loads the player when someone clicks it.
+ *    Alternatives: a self-hosted clip in /public/media
+ *      media: { type: 'video', src: '/media/name.mp4', alt: '...' }
+ *    or a still image (use fit: 'contain' for plots you must not crop)
+ *      media: { type: 'image', src: '/media/plot.webp', alt: '...', fit: 'contain' }
+ *    Leave `media` off entirely and a "coming soon" placeholder is shown.
  * 3. git push - Vercel redeploys.
  * The left/right alternation is automatic; you never set it here.
  */
@@ -24,25 +31,14 @@ export const projects: Project[] = [
     codeUrl: 'https://github.com/Leon-web-net/gesture-app',
     status: 'live',
     period: '2026',
-    // media: { type: 'video', src: '/media/gesture-app.mp4', alt: 'Gesture app recognising a victory sign' },
+    media: {
+      type: 'youtube',
+      id: 'EW4Ia1L1KV4',
+      alt: 'Screen recording of the gesture app tracking a hand and classifying gestures live',
+    },
   },
-  {
-    id: 'snake-ai',
-    title: 'Snake AI',
-    tagline: 'Rainbow-style deep Q-learning agent for the Warwick AI competition',
-    description:
-      'A DQN built from scratch in PyTorch with Double DQN, dueling head, prioritised replay, n-step returns, NoisyNet exploration and action masking. The board is encoded as a 15-channel spatial tensor with two stacked frames so a compact CNN can see motion, and reward shaping (potential-based food shaping, trap and starvation penalties) turns a sparse signal into something that trains in hours.',
-    highlights: [
-      'CI-verified average score of 26.3 across four difficulty tiers (1000 games each)',
-      'Action masking removes suicidal moves before argmax, so the net only picks survivable actions',
-    ],
-    tags: ['Python', 'PyTorch', 'Reinforcement Learning', 'DQN', 'CNN'],
-    codeUrl: 'https://github.com/Leon-web-net/Snake_AI',
-    status: 'complete',
-    period: '2025',
-    // media: { type: 'video', src: '/media/snake-ai.mp4', alt: 'Trained agent playing Snake' },
-  },
-  {
+
+   {
     id: 'torque-vectoring',
     title: 'Torque Vectoring for a Formula Student EV',
     tagline: 'Final-year group project with Warwick Racing',
@@ -52,11 +48,11 @@ export const projects: Project[] = [
       'Targeted improved cornering stability and reduced trajectory error versus equal-torque control',
       'Companion ROS 2 + Arduino package for an RC test platform',
     ],
-    tags: ['MATLAB', 'Simulink', 'IPG CarMaker', 'Vehicle Dynamics', 'ROS 2', 'Control'],
+    tags: ['MATLAB', 'Simulink', 'IPG CarMaker', 'Vehicle Dynamics', 'Control'],
     codeUrl: 'https://github.com/Leon-web-net/wrai_rc_ES410_GP15',
     status: 'complete',
     period: '2025 - 2026',
-    // media: { type: 'video', src: '/media/torque-vectoring.mp4', alt: 'CarMaker simulation of the torque-vectored car cornering' },
+    // media: { type: 'youtube', id: 'VIDEO_ID', alt: 'CarMaker simulation of the torque-vectored car cornering' },
   },
   {
     id: 'quadrotor-mpc',
@@ -72,8 +68,25 @@ export const projects: Project[] = [
     codeUrl: 'https://github.com/Leon-web-net/Quadrotor-Attitude',
     status: 'complete',
     period: '2025',
-    // media: { type: 'image', src: '/media/quadrotor-response.webp', alt: 'Roll and pitch step response under MPC' },
+    // media: { type: 'image', src: '/media/quadrotor-response.webp', alt: 'Roll and pitch step response under MPC', fit: 'contain' },
   },
+  {
+    id: 'snake-ai',
+    title: 'Snake AI',
+    tagline: 'Rainbow-style deep Q-learning agent for the Warwick AI competition',
+    description:
+      'A DQN built from scratch in PyTorch with Double DQN, dueling head, prioritised replay, n-step returns, NoisyNet exploration and action masking. The board is encoded as a 15-channel spatial tensor with two stacked frames so a compact CNN can see motion, and reward shaping (potential-based food shaping, trap and starvation penalties) turns a sparse signal into something that trains in hours.',
+    highlights: [
+      'CI-verified average score of 26.3 across four difficulty tiers (1000 games each)',
+      'Action masking removes suicidal moves before argmax, so the net only picks survivable actions',
+    ],
+    tags: ['Python', 'PyTorch', 'Reinforcement Learning', 'DQN', 'CNN'],
+    codeUrl: 'https://github.com/Leon-web-net/Snake_AI',
+    status: 'complete',
+    period: '2025',
+    // media: { type: 'youtube', id: 'VIDEO_ID', alt: 'Trained agent playing Snake' },
+  },
+ 
   {
     id: 'neural-net-cpp',
     title: 'Neural Network from Scratch in C++',

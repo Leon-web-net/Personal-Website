@@ -1,7 +1,7 @@
 .media {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: var(--media-aspect);
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--surface);
@@ -13,6 +13,107 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border: 0;
+  display: block;
+}
+
+/* For plots and diagrams that must not be cropped. */
+.media--contain .media__el {
+  object-fit: contain;
+  background: var(--surface);
+}
+
+/* Hover-to-play YouTube preview */
+.media__facade {
+  padding: 0;
+  cursor: pointer;
+  display: block;
+  font: inherit;
+  color: inherit;
+  transition: box-shadow 200ms, transform 200ms;
+}
+
+/*
+ * The player is laid out at 1920x1080 and scaled down to fit. YouTube chooses stream
+ * quality from the player's layout size, and `transform` is a paint-time operation that
+ * leaves layout size alone - so it serves 1080p while we display it at card size.
+ * `--yt-scale` is set from a ResizeObserver in YouTubePreview.tsx.
+ */
+.media__player {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(var(--yt-scale, 0.28));
+  transform-origin: center center;
+  /* The cursor never reaches the player, so YouTube's title and "Watch on YouTube"
+     overlays are never triggered. */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 320ms var(--ease);
+}
+
+.media__player.is-playing {
+  opacity: 1;
+}
+
+.media__player iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Both fade out while the video plays, leaving just the picture. */
+.media__scrim.is-hidden,
+.media__play.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.media__facade:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(17, 24, 39, 0.08), 0 14px 32px rgba(17, 24, 39, 0.12);
+}
+
+/* Kept light: the play button carries its own contrast, and most of these
+   thumbnails are screenshots of light UI that a heavy scrim just dulls. */
+.media__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0), rgba(17, 24, 39, 0.1));
+  transition: background 200ms, opacity 320ms var(--ease);
+}
+
+.media__facade:hover .media__scrim {
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0), rgba(17, 24, 39, 0.04));
+}
+
+.media__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 6px 20px rgba(17, 24, 39, 0.25);
+  transition: scale 200ms var(--ease), background 200ms, opacity 240ms var(--ease);
+}
+
+.media__facade:hover .media__play {
+  scale: 1.08;
+  background: #fff;
+}
+
+.media__play-icon {
+  width: 26px;
+  height: 26px;
+  color: var(--accent);
+  /* Nudge the triangle so it looks centred inside the circle. */
+  margin-left: 3px;
 }
 
 .media--placeholder {
@@ -34,4 +135,22 @@
   height: 36px;
   color: var(--accent);
   opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media__facade,
+  .media__facade:hover,
+  .media__play,
+  .media__facade:hover .media__play {
+    transition: none;
+    transform: none;
+    scale: 1;
+  }
+
+  /* Note: .media__player keeps its transform. That scale is layout, not decoration -
+     without it the 1080p player would overflow the card. Only the fade is dropped. */
+  .media__player,
+  .media__scrim {
+    transition: none;
+  }
 }
