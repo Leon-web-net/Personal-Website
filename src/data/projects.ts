@@ -40,7 +40,7 @@ export const projects: Project[] = [
 
    {
     id: 'torque-vectoring',
-    title: 'Designing & Simulatinga Torque Vectoring System for Formula Student EV',
+    title: 'Designing & Simulating a Torque Vectoring System for Formula Student EV',
     tagline: 'Final year group project',
     description:
       'A two-layer closed loop controller that distributes torque between the wheels of an electric race car to improve cornering, built on Pacejka tyre modelling and load-transfer effects. Simulated in IPG CarMaker across different inhub motor drivetrain layouts. Four-person team; co-authored the 40-page group dissertation.',
