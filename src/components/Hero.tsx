@@ -1,8 +1,16 @@
 import { profile } from '../data/profile'
 import { projects } from '../data/projects'
 import { ExternalIcon, GitHubIcon, LinkedInIcon, MailIcon } from './Icons'
-import { HeroBackdrop } from './HeroBackdrop'
+import { HeroBackdrop, type BackdropVariant } from './HeroBackdrop'
 import './Hero.css'
+
+/**
+ * Hero background. Change this one word to swap it:
+ *   'scan' - point field with a slow sweep (canvas)
+ *   'grid' - static dot grid with a soft glow (pure CSS, zero runtime cost)
+ *   'none' - nothing
+ */
+const BACKDROP: BackdropVariant = 'scan'
 
 /** One row each: icon, label, and the line of personality beside it. */
 const links = [
@@ -36,7 +44,7 @@ const links = [
 export function Hero() {
   return (
     <section className="hero" id="top">
-      <HeroBackdrop />
+      <HeroBackdrop variant={BACKDROP} />
       <div className="container">
         {/* Identity and links sit side by side, then wrap to stacked when the two no
             longer fit across the content column. */}

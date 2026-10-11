@@ -17,11 +17,25 @@ const REST_ALPHA = 0.12
 const LIT_ALPHA = 0.38
 
 /**
- * A point field with a slow scan sweeping across it, like a depth sensor sampling the
- * scene. Purely decorative: it sits behind the hero text, ignores the pointer, and is
- * hidden from assistive tech.
+ * Which backdrop the hero gets.
+ *
+ * - `scan` - point field with a slow sweep, like a depth sensor sampling the scene.
+ *   Canvas based, so it has a (small) runtime cost.
+ * - `grid` - static dot grid with a soft accent glow. Pure CSS: no canvas, no JS, and
+ *   nothing running at all, so nothing to pause or throttle.
+ * - `none` - no backdrop.
  */
-export function HeroBackdrop() {
+export type BackdropVariant = 'scan' | 'grid' | 'none'
+
+interface Props {
+  variant?: BackdropVariant
+}
+
+/**
+ * Purely decorative: it sits behind the hero text, ignores the pointer, and is hidden
+ * from assistive tech.
+ */
+export function HeroBackdrop({ variant = 'scan' }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
@@ -30,6 +44,9 @@ export function HeroBackdrop() {
   const inView = useInView(wrapRef, 0)
 
   useEffect(() => {
+    // Only the canvas variant has anything to run.
+    if (variant !== 'scan') return
+
     const wrap = wrapRef.current
     const canvas = canvasRef.current
     if (!wrap || !canvas) return
@@ -123,7 +140,14 @@ export function HeroBackdrop() {
       cancelAnimationFrame(raf)
       observer.disconnect()
     }
-  }, [reducedMotion, inView])
+  }, [variant, reducedMotion, inView])
+
+  if (variant === 'none') return null
+
+  // No canvas and no effect - the whole thing is two stacked CSS gradients.
+  if (variant === 'grid') {
+    return <div className="hero__backdrop hero__backdrop--grid" aria-hidden="true" />
+  }
 
   return (
     <div ref={wrapRef} className="hero__backdrop" aria-hidden="true">

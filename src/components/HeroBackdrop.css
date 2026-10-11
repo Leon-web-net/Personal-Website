@@ -13,3 +13,24 @@
 .hero__backdrop canvas {
   display: block;
 }
+
+/*
+ * Static variant: a faint dot grid with a soft accent glow sitting behind the name.
+ * Two background layers on one element - the glow is listed first so it paints over
+ * the dots. Nothing animates, so there is no reduced-motion case to handle and no
+ * frame cost at all.
+ */
+.hero__backdrop--grid {
+  background-image:
+    radial-gradient(58% 72% at 26% 46%, rgba(29, 78, 216, 0.13), transparent 70%),
+    radial-gradient(circle, rgba(100, 116, 139, 0.2) 1px, transparent 1.4px);
+  background-size:
+    100% 100%,
+    24px 24px;
+  background-position:
+    center,
+    center;
+  background-repeat:
+    no-repeat,
+    repeat;
+}
