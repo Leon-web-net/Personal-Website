@@ -41,6 +41,7 @@ export const projects: Project[] = [
    {
     id: 'torque-vectoring',
     title: 'Designing & Simulating a Torque Vectoring System for Formula Student EV',
+    shortTitle: 'Torque Vectoring',
     tagline: 'Final year group project',
     description:
       'A two-layer closed loop controller that distributes torque between the wheels of an electric race car to improve cornering, built on Pacejka tyre modelling and load-transfer effects. Simulated in IPG CarMaker across different inhub motor drivetrain layouts. Four-person team; co-authored the 40-page group dissertation.',
@@ -58,6 +59,7 @@ export const projects: Project[] = [
   {
     id: 'quadrotor-mpc',
     title: 'Quadrotor Attitude Control',
+    shortTitle: 'Quadrotor Control',
     tagline: 'Linear and nonlinear MPC about an unstable hover equilibrium',
     description:
       'Attitude control of a quadrotor whose rotational inertias are on the order of 1e-4 kg·m², so the dynamics play out in milliseconds. Modelled and linearised the rotational dynamics, then designed a constrained linear MPC with a shared torque budget (‖τ‖₂ ≤ 0.25 N·m).',
@@ -98,6 +100,7 @@ export const projects: Project[] = [
   {
     id: 'neural-net-cpp',
     title: 'Neural Network from Scratch in C++',
+    shortTitle: 'Neural Net in C++',
     tagline: 'No ML libraries: custom matrix class, backprop and OpenMP-parallel training',
     description:
       'A second iteration of my from scratch feed forward network. The first version (Eigen-based) reached 97.4% on MNIST; this rewrite drops Eigen for custom matrix library, adds a proper CMake build and tests, and uses OpenMP to parallelise mini-batch training. The goal is a clean, dependency free implementation that I understand line by line.',

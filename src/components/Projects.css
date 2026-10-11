@@ -21,7 +21,9 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  /* min() keeps the track from demanding 300px on a screen narrower than that, which
+     otherwise pushes the grid wider than the viewport and causes sideways scroll. */
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: var(--s-6);
 }
 

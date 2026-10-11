@@ -7,38 +7,138 @@
   padding-block: var(--s-24) 0;
 }
 
-.hero__role {
-  color: var(--accent);
-  font-weight: 600;
-  font-size: var(--fs-sm);
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  margin-bottom: var(--s-4);
-}
-
-.hero__title {
-  font-size: var(--fs-hero);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  max-width: 18ch;
-  margin-bottom: var(--s-6);
-}
-
-.hero__intro {
-  font-size: var(--fs-md);
-  color: var(--text-muted);
-  max-width: 58ch;
+/*
+ * Identity on the left, links on the right. Wrapping rather than a hard breakpoint, so
+ * the links drop underneath exactly when they stop fitting instead of at a guessed width.
+ */
+.hero__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-8) var(--s-12);
   margin-bottom: var(--s-8);
 }
 
-.hero__actions {
+.hero__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--s-6);
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.hero__photo {
+  width: 132px;
+  height: 132px;
+  flex: none;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  background: var(--surface);
+}
+
+.hero__name {
+  font-size: var(--fs-hero);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--s-2);
+}
+
+.hero__degree {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.hero__university {
+  color: var(--text-muted);
+}
+
+.hero__projects {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-3);
 }
 
+.hero__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  /*
+   * Takes whatever width is left beside the identity, letting the blurbs wrap rather
+   * than forcing the whole block onto its own row. Without min-width: 0 a flex item
+   * refuses to shrink below its content, which dropped the links underneath while a
+   * few hundred pixels of space sat unused on the right.
+   */
+  flex: 1 1 300px;
+  min-width: 0;
+}
+
+.hero__link-row {
+  display: flex;
+  /* Keeps the label level with the first line of a blurb that wraps to two. */
+  align-items: flex-start;
+  gap: var(--s-3);
+}
+
+.hero__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-weight: 600;
+  color: var(--text);
+  /* Fixed width lines the blurbs up into a tidy second column. */
+  min-width: 7rem;
+  flex: none;
+}
+
+.hero__link:hover {
+  color: var(--accent);
+}
+
+.hero__link-icon {
+  width: 17px;
+  height: 17px;
+  flex: none;
+}
+
+.hero__link-out {
+  width: 13px;
+  height: 13px;
+  opacity: 0.5;
+}
+
+.hero__blurb {
+  color: var(--text-muted);
+}
+
 @media (max-width: 640px) {
   .hero {
     padding-block: var(--s-16) 0;
+  }
+
+  .hero__identity {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-4);
+  }
+
+  .hero__photo {
+    width: 104px;
+    height: 104px;
+  }
+
+  /* Stack each link over its blurb rather than letting a long one wrap mid-line. */
+  .hero__link-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-1);
+  }
+
+  .hero__link {
+    min-width: 0;
   }
 }

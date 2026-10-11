@@ -26,6 +26,8 @@ export interface Project {
   /** Stable id, also used as the DOM anchor (#gesture-app). */
   id: string
   title: string
+  /** Shorter label for the hero's jump links. Falls back to `title` when omitted. */
+  shortTitle?: string
   /** One-line hook shown under the title, e.g. "Real-time hand tracking in the browser". */
   tagline: string
   /** 2-4 short sentences: what it does, then the interesting technical bit. */
