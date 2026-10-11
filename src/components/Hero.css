@@ -5,6 +5,14 @@
  */
 .hero {
   padding-block: var(--s-24) 0;
+  /* Anchors the point-field backdrop, which is absolutely positioned to fill the hero. */
+  position: relative;
+}
+
+/* Keeps the text above the backdrop rather than being painted over by it. */
+.hero .container {
+  position: relative;
+  z-index: 1;
 }
 
 /*

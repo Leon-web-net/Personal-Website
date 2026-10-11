@@ -1,6 +1,7 @@
 import { profile } from '../data/profile'
 import { projects } from '../data/projects'
 import { ExternalIcon, GitHubIcon, LinkedInIcon, MailIcon } from './Icons'
+import { HeroBackdrop } from './HeroBackdrop'
 import './Hero.css'
 
 /** One row each: icon, label, and the line of personality beside it. */
@@ -35,6 +36,7 @@ const links = [
 export function Hero() {
   return (
     <section className="hero" id="top">
+      <HeroBackdrop />
       <div className="container">
         {/* Identity and links sit side by side, then wrap to stacked when the two no
             longer fit across the content column. */}

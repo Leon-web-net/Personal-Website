@@ -1,0 +1,15 @@
+.hero__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  /* Decorative only - never intercept a click meant for a link underneath it. */
+  pointer-events: none;
+  /* Fades into the page instead of stopping at a hard edge. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 74%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 74%, transparent);
+}
+
+.hero__backdrop canvas {
+  display: block;
+}
